@@ -68,7 +68,7 @@ const Navbar = () => {
             className="h-8 rounded-md"
             alt="HerWay Logo"
           />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-gray-800 brillant">
+                      <span className="self-center text-2xl font-semibold whitespace-nowrap text-gray-800 neueUB">
             HerWay
           </span>
         </a>

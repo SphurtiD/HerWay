@@ -395,7 +395,7 @@ const About = () => {
     <section className="py-16 px-4 bg-pink-50 text-gray-800 flex justify-center items-center min-h-screen">
       <div className="max-w-6xl mx-auto text-center">
         {/* About Us Description */}
-        <h2 className="text-4xl md:text-5xl font-extrabold mb-8 text-pink-600 brillant">
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-8 text-pink-600 neueUB">
           About Us
         </h2>
         <p className="mb-16 max-w-3xl mx-auto text-lg leading-relaxed">

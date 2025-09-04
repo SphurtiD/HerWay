@@ -231,9 +231,9 @@ const BlurText = ({
   const times = Array.from({ length: stepCount }, (_, i) => (stepCount === 1 ? 0 : i / (stepCount - 1)));
 
   return (
-    <motion.p
+    <motion.div
       ref={ref}
-      className={`blur-text ${className} flex flex-wrap`}
+      className={`blur-text ${className} leading-tight`}
       onAnimationComplete={onAnimationComplete}
     >
       {elements.map((segment, index) => {
@@ -248,18 +248,18 @@ const BlurText = ({
 
         return (
           <motion.span
-            className="inline-block will-change-[transform,filter,opacity]"
+            className="inline-block will-change-[transform,filter,opacity] whitespace-nowrap"
             key={index}
             initial={fromSnapshot}
             animate={inView ? animateKeyframes : fromSnapshot}
             transition={spanTransition}
           >
             {segment === ' ' ? '\u00A0' : segment}
-            {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
+            {animateBy === 'words' && index < elements.length - 1 && (segment === ' ' ? '' : '\u00A0')}
           </motion.span>
         );
       })}
-    </motion.p>
+    </motion.div>
   );
 };
 
@@ -289,7 +289,7 @@ const Hero = () => {
       {/* Hero Content Container */}
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-start justify-center p-4 z-10">
         {/* "HerWay" text */}
-        <span className="henri text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-purple-300 text-left">
+        <span className="neueM text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-purple-300 text-left">
           HerWay
         </span>
 
@@ -300,7 +300,7 @@ const Hero = () => {
           animateBy="words"
           direction="top"
           onAnimationComplete={handleAnimationComplete}
-          className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl drop-shadow-xl algha text-white text-left mt-2 sm:mt-4 mb-8"
+          className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl drop-shadow-xl algha text-white text-left mt-2 sm:mt-4 mb-8 break-words"
         />
 
         {/* Get Started Button */}
