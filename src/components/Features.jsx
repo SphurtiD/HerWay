@@ -108,7 +108,7 @@ const Features = () => {
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         {/* Main title in a clear, visible pink */}
-        <h2 className="text-4xl md:text-5xl font-extrabold text-center mb-12 text-pink-600 neueUB">
+        <h2 className="text-4xl md:text-5xl font-extrabold text-center mb-12 text-pink-600 maqotta">
           Why Choose HerWay?
         </h2>
 

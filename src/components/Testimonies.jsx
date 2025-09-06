@@ -143,42 +143,42 @@ export default function App() {
     {
       name: 'Priya Sharma',
       location: 'Mumbai, India',
-      image: 'https://via.placeholder.com/250x250/FFC0CB/FFFFFF?text=Priya',
+      image: '/images/woman4.jpg',
       quote: "HerWay gave me the confidence to explore India solo. The real-time alerts and community support made me feel truly safe. Highly recommend!",
       caption: "Confident Explorer"
     },
     {
       name: 'Aisha Khan',
       location: 'Dubai, UAE',
-      image: 'https://via.placeholder.com/250x250/ADD8E6/000000?text=Aisha',
+      image: '/images/woman5.jpg',
       quote: "The fake call feature saved me from an awkward situation. It's a brilliant tool for solo female travelers. Thank you, HerWay!",
       caption: "Smart & Secure"
     },
     {
       name: 'Sophie Lee',
       location: 'London, UK',
-      image: 'https://via.placeholder.com/250x250/DDA0DD/FFFFFF?text=Sophie',
+      image: '/images/woman3.jpg',
       quote: "Connecting with other women through HerWay's community made my trip so much richer. It's more than an app; it's a sisterhood.",
       caption: "Connected Traveler"
     },
     {
       name: 'Mei Ling',
       location: 'Singapore',
-      image: 'https://via.placeholder.com/250x250/90EE90/000000?text=Mei',
+      image: '/images/woman1.jpg',
       quote: "The location-based safety zones are incredibly accurate. I felt informed and protected throughout my journey in unfamiliar cities.",
       caption: "Informed & Protected"
     },
       {
       name: 'Elena Petrova',
       location: 'Berlin, Germany',
-      image: 'https://via.placeholder.com/250x250/FFD700/000000?text=Elena',
+      image: '/images/woman2.jpg',
       quote: "Finally, an app that understands the unique needs of women travelers. The emergency assistance gives me true peace of mind.",
       caption: "Peace of Mind"
     },
     {
       name: 'Fatima Al-Farsi',
       location: 'Riyadh, Saudi Arabia',
-      image: 'https://via.placeholder.com/250x250/B0C4DE/000000?text=Fatima',
+      image: '/images/woman6.jpg',
       quote: "HerWay is an essential companion for any woman venturing out alone. It's intuitive, reliable, and genuinely empowering.",
       caption: "Empowered Journey"
     },
