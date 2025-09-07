@@ -33,40 +33,12 @@
     src: url('/fonts/NeueMachina-Regular.otf');
   }
   @font-face {
-    font-family: "neueUB";
-    src: url('/fonts/NeueMachina-Ultabold.otf');
-  }
-  @font-face {
-    font-family: "khofira";
-    src: url('/fonts/Khofira.otf');
-  }
-  @font-face {
-    font-family: "valestra";
-    src: url('/fonts/Valestra.otf');
-  }
-  @font-face {
-    font-family: "maqotta";
-    src: url('/fonts/Maqotta.otf');
-  }
-  @font-face {
     font-family: "grotesk";
     src: url('/fonts/SpaceGrotesk.ttf');
   }
 }
 
 @layer utilities {
-  .neueL {
-    font-family: "neueL";
-    font-feature-settings: "ss01" on;
-  }
-  .neueM {
-    font-family: "neueM";
-    font-feature-settings: "ss01" on;
-  }
-  .neueUB {
-    font-family: "neueUB";
-    font-feature-settings: "ss01" on;
-  }
   .algha {
     font-family: "algha";
     font-feature-settings: "ss01" on;
@@ -81,18 +53,6 @@
   }
   .neueUB {
     font-family: "neueUB";
-    font-feature-settings: "ss01" on;
-  }
-  .khofira {
-    font-family: "khofira";
-    font-feature-settings: "ss01" on;
-  }
-  .valestra {
-    font-family: "valestra";
-    font-feature-settings: "ss01" on;
-  }
-  .maqotta {
-    font-family: "maqotta";
     font-feature-settings: "ss01" on;
   }
   .grotesk {
