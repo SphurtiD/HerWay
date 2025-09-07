@@ -364,6 +364,7 @@ const About = () => {
       status: "Coding",
       avatarUrl: "/images/Ayush.png", // Assuming this path is correct
       miniAvatarUrl: "/images/Ayush.png", // Assuming this path is correct
+      linkedinUrl: 'https://www.linkedin.com/in/ayush-bhosale-207ba7250/',
     },
     {
       name: "Piyush Dokle",
@@ -372,6 +373,7 @@ const About = () => {
       status: "Debugging",
       avatarUrl: "/images/Piyush.png", // Assuming this path is correct
       miniAvatarUrl: "/images/Piyush.png", // Assuming this path is correct
+      linkedinUrl: 'https://www.linkedin.com/in/ayush-bhosale-207ba7250/',
     },
     {
       name: "Yuvraj Chauhan",
@@ -380,6 +382,7 @@ const About = () => {
       status: "Designing",
       avatarUrl: "/images/Yuvraj.png", // Assuming this path is correct
       miniAvatarUrl: "/images/Yuvraj.png", // Assuming this path is correct
+      linkedinUrl: 'https://www.linkedin.com/in/ayush-bhosale-207ba7250/',
     },
     {
       name: "Sphurti Dixit",
@@ -388,6 +391,7 @@ const About = () => {
       status: "Styling",
       avatarUrl: "/images/Sphur.png", // Assuming this path is correct
       miniAvatarUrl: "/images/Sphur.png", // Assuming this path is correct
+      linkedinUrl: 'https://www.linkedin.com/in/sphurti-dixit-b430132b0/',
     },
   ];
 
@@ -426,6 +430,7 @@ const About = () => {
               // You can customize default gradients for each card here if needed
               // behindGradient="radial-gradient(...)"
               // innerGradient="linear-gradient(...)"
+              onContactClick={() => window.open(dev.linkedinUrl, "_blank")} // 👈 Open LinkedIn
             />
           ))}
         </div>

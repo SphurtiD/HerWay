@@ -289,7 +289,7 @@ const Hero = () => {
       {/* Hero Content Container */}
       <div className="absolute top-0 left-0 w-full h-full flex flex-col items-start justify-center p-4 z-10">
         {/* "HerWay" text */}
-        <span className="neueL text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-purple-300 text-left font-semibold">
+        <span className="grotesk text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-purple-300 text-left font-semibold">
           HerWay
         </span>
 

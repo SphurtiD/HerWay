@@ -44,6 +44,14 @@
     font-family: "valestra";
     src: url('/fonts/Valestra.otf');
   }
+  @font-face {
+    font-family: "maqotta";
+    src: url('/fonts/Maqotta.otf');
+  }
+  @font-face {
+    font-family: "grotesk";
+    src: url('/fonts/SpaceGrotesk.ttf');
+  }
 }
 
 @layer utilities {
@@ -81,6 +89,14 @@
   }
   .valestra {
     font-family: "valestra";
+    font-feature-settings: "ss01" on;
+  }
+  .maqotta {
+    font-family: "maqotta";
+    font-feature-settings: "ss01" on;
+  }
+  .grotesk {
+    font-family: "grotesk";
     font-feature-settings: "ss01" on;
   }
 }

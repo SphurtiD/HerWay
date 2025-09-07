@@ -2,8 +2,11 @@ import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom"; // 👈 import useLocation
 import Home from "./pages/Home";
 import About from "./pages/About";
+import ContactUs from "./pages/ContactUs";
 import PillNav from "./components/PillNav";
 import LogoLoop from './components/LogoLoop';
+import FAQs from "./pages/FAQs";
+import StartSurvey from "./pages/StartSurvey";
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
 
 const techLogos = [
@@ -38,8 +41,9 @@ const App = () => {
           items={[
             { label: "Home", href: "/" },
             { label: "About", href: "/about" }, // 👈 lowercase path to match Route
-            { label: "Services", href: "/services" },
-            { label: "Contact", href: "/contact" },
+            { label: "FAQs", href: "/faqs" },
+            { label: "Contact Us", href: "/contactus" },
+            { label: "Start Survey", href: "/startsurvey" },
           ]}
           activeHref={location.pathname} // 👈 dynamic instead of "/"
           className="custom-nav"
@@ -54,8 +58,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} /> {/* 👈 route enabled */}
-        {/* <Route path="/services" element={<Services />} /> */}
-        {/* <Route path="/contact" element={<Contact />} /> */}
+        <Route path="/faqs" element={<FAQs />} />
+        <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/startsurvey" element={<StartSurvey />} />
       </Routes>
 
       <div style={{ height: '60px', position: 'relative', overflow: 'hidden'}} className="bg-pink-200">
