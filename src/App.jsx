@@ -1,13 +1,17 @@
 import React from "react";
-import { Routes, Route, useLocation } from "react-router-dom"; // 👈 import useLocation
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import ContactUs from "./pages/ContactUs";
 import PillNav from "./components/PillNav";
 import LogoLoop from './components/LogoLoop';
+import ClickSpark from './components/ClickSpark';
+import EndSurvey from './pages/EndSurvey';
+import Community from "./pages/Community";
 import FAQs from "./pages/FAQs";
 import StartSurvey from "./pages/StartSurvey";
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
+import logo from "./assets/logo.png";
 
 const techLogos = [
   { node: <SiReact />, title: "React", href: "https://react.dev" },
@@ -25,58 +29,66 @@ const imageLogos = [
   { src: "/logos/twitter.png", alt: "Twitter", href: "https://twitter.com" },
 ];
 
-// ✅ Import your logo
-import logo from "./assets/logo.png"; // adjust path to where your logo actually is
-
 const App = () => {
-  const location = useLocation(); // 👈 get current path
+  const location = useLocation();
 
   return (
     <>
-      {/* ✅ Navbar centered */}
-      <div className="flex justify-center items-center">
-        <PillNav
-          logo={logo}
-          logoAlt="Company Logo"
-          items={[
-            { label: "Home", href: "/" },
-            { label: "About", href: "/about" }, // 👈 lowercase path to match Route
-            { label: "FAQs", href: "/faqs" },
-            { label: "Contact Us", href: "/contactus" },
-            { label: "Start Survey", href: "/startsurvey" },
-          ]}
-          activeHref={location.pathname} // 👈 dynamic instead of "/"
-          className="custom-nav"
-          ease="power2.easeOut"
-          baseColor="#F9A8D4"
-          pillColor="#93C5FD"
-          hoveredPillTextColor="#ffffff"
-          pillTextColor="#000000"
-        />
-      </div>
+      <ClickSpark
+        sparkColor='#d946ef'
+        sparkSize={10}
+        sparkRadius={15}
+        sparkCount={8}
+        duration={400}
+      >
+        <div className="flex justify-center items-center">
+          <PillNav
+            logo={logo}
+            logoAlt="Company Logo"
+            items={[
+              { label: "Home", href: "/" },
+              { label: "About", href: "/about" },
+              { label: "Community", href: "/community" },
+              { label: "FAQs", href: "/faqs" },
+              { label: "Contact Us", href: "/contactus" },
+              { label: "Start Survey", href: "/startsurvey" },
+              { label: "End Survey", href: "/endsurvey" },
+            ]}
+            activeHref={location.pathname}
+            className="custom-nav"
+            ease="power2.easeOut"
+            baseColor="#F9A8D4"
+            pillColor="#93C5FD"
+            hoveredPillTextColor="#ffffff"
+            pillTextColor="#000000"
+          />
+        </div>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} /> {/* 👈 route enabled */}
-        <Route path="/faqs" element={<FAQs />} />
-        <Route path="/contactus" element={<ContactUs />} />
-        <Route path="/startsurvey" element={<StartSurvey />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/faqs" element={<FAQs />} />
+          <Route path="/contactus" element={<ContactUs />} />
+          <Route path="/startsurvey" element={<StartSurvey />} />
+          <Route path="/endsurvey" element={<EndSurvey />} />
+        </Routes>
 
-      <div style={{ height: '60px', position: 'relative', overflow: 'hidden'}} className="bg-pink-200">
-      <LogoLoop
-        logos={techLogos}
-        speed={120}
-        direction="left"
-        logoHeight={48}
-        gap={40}
-        pauseOnHover
-        scaleOnHover
-        fadeOut
-        fadeOutColor="#ffffff"
-        ariaLabel="Technology partners"
-      />
-    </div>
+        <div style={{ height: '60px', position: 'relative', overflow: 'hidden'}} className="bg-pink-200">
+          <LogoLoop
+            logos={techLogos}
+            speed={120}
+            direction="left"
+            logoHeight={48}
+            gap={40}
+            pauseOnHover
+            scaleOnHover
+            fadeOut
+            fadeOutColor="#ffffff"
+            ariaLabel="Technology partners"
+          />
+        </div>
+      </ClickSpark>
     </>
   );
 };

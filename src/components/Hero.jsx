@@ -296,7 +296,7 @@ const Hero = () => {
         {/* The 'BlurText' component is now correctly integrated here */}
         <BlurText
           text="With You."
-          delay={150}
+          delay={500}
           animateBy="words"
           direction="top"
           onAnimationComplete={handleAnimationComplete}

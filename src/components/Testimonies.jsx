@@ -187,8 +187,8 @@ export default function App() {
   return (
     <div className="bg-pink-50 min-h-screen text-gray-800 font-sans p-8">
       <header className="text-center mb-16">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-pink-600">Hear From Our Travelers</h1>
-        <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-pink-600 algha">Hear From Our Travelers</h1>
+        <p className="mt-4 text-gray-500 max-w-2xl mx-auto neueL">
           Our community's stories of confidence and safety speak for themselves.
         </p>
       </header>
