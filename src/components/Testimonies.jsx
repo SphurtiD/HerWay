@@ -157,7 +157,7 @@ export default function App() {
     {
       name: 'Sophie Lee',
       location: 'London, UK',
-      image: '/images/woman3.jpg',
+      image: '/images/woman2.jpg',
       quote: "Connecting with other women through HerWay's community made my trip so much richer. It's more than an app; it's a sisterhood.",
       caption: "Connected Traveler"
     },
@@ -171,7 +171,7 @@ export default function App() {
       {
       name: 'Elena Petrova',
       location: 'Berlin, Germany',
-      image: '/images/woman2.jpg',
+      image: '/images/woman3.jpg',
       quote: "Finally, an app that understands the unique needs of women travelers. The emergency assistance gives me true peace of mind.",
       caption: "Peace of Mind"
     },

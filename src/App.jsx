@@ -6,10 +6,8 @@ import ContactUs from "./pages/ContactUs";
 import PillNav from "./components/PillNav";
 import LogoLoop from './components/LogoLoop';
 import ClickSpark from './components/ClickSpark';
-import EndSurvey from './pages/EndSurvey';
 import Community from "./pages/Community";
 import FAQs from "./pages/FAQs";
-import StartSurvey from "./pages/StartSurvey";
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
 import logo from "./assets/logo.png";
 
@@ -41,7 +39,7 @@ const App = () => {
         sparkCount={8}
         duration={400}
       >
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center neueL">
           <PillNav
             logo={logo}
             logoAlt="Company Logo"
@@ -51,8 +49,6 @@ const App = () => {
               { label: "Community", href: "/community" },
               { label: "FAQs", href: "/faqs" },
               { label: "Contact Us", href: "/contactus" },
-              { label: "Start Survey", href: "/startsurvey" },
-              { label: "End Survey", href: "/endsurvey" },
             ]}
             activeHref={location.pathname}
             className="custom-nav"
@@ -70,8 +66,6 @@ const App = () => {
           <Route path="/community" element={<Community />} />
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/startsurvey" element={<StartSurvey />} />
-          <Route path="/endsurvey" element={<EndSurvey />} />
         </Routes>
 
         <div style={{ height: '60px', position: 'relative', overflow: 'hidden'}} className="bg-pink-200">
