@@ -8,6 +8,7 @@ import LogoLoop from './components/LogoLoop';
 import ClickSpark from './components/ClickSpark';
 import Community from "./pages/Community";
 import FAQs from "./pages/FAQs";
+import MapPage from "./pages/MapPage";
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
 import logo from "./assets/logo.png";
 
@@ -49,6 +50,7 @@ const App = () => {
               { label: "Community", href: "/community" },
               { label: "FAQs", href: "/faqs" },
               { label: "Contact Us", href: "/contactus" },
+              { label: "Map", href: "/map" },
             ]}
             activeHref={location.pathname}
             className="custom-nav"
@@ -66,6 +68,7 @@ const App = () => {
           <Route path="/community" element={<Community />} />
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/contactus" element={<ContactUs />} />
+          <Route path="/map" element={<MapPage />} />
         </Routes>
 
         <div style={{ height: '60px', position: 'relative', overflow: 'hidden'}} className="bg-pink-200">
