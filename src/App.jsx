@@ -9,6 +9,8 @@ import ClickSpark from './components/ClickSpark';
 import Community from "./pages/Community";
 import FAQs from "./pages/FAQs";
 import MapPage from "./pages/MapPage";
+import StartRecording from "./pages/StartRecording";
+import FakeCallPage from "./pages/FakeCalls";
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
 import logo from "./assets/logo.png";
 
@@ -51,6 +53,8 @@ const App = () => {
               { label: "FAQs", href: "/faqs" },
               { label: "Contact Us", href: "/contactus" },
               { label: "Map", href: "/map" },
+              { label: "Start Recording", href: "/startrecording" },
+              { label: "Fake Calls", href: "/fakecalls" },
             ]}
             activeHref={location.pathname}
             className="custom-nav"
@@ -69,6 +73,8 @@ const App = () => {
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/startrecording" element={<StartRecording />} />
+          <Route path="/fakecalls" element={<FakeCallPage />} />
         </Routes>
 
         <div style={{ height: '60px', position: 'relative', overflow: 'hidden'}} className="bg-pink-200">
