@@ -56,23 +56,36 @@ function FakeCallPage() {
 
   // Otherwise, show the selection screen
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6 pt-12">
-      <h2 className="text-2xl font-semibold mb-6">Initiate Fake Call</h2>
+    <div className="flex flex-col items-center min-h-screen bg-pink-50 p-6 pt-12">
+      <h2 className="text-2xl font-semibold my-6">Initiate Fake Call</h2>
 
       {/* Scenario Selection */}
       <div className="w-full max-w-md mb-6">
         <h3 className="text-lg font-medium mb-2">Select Scenario:</h3>
         <div className="space-y-2">
           {fakeCallScenarios.map(scenario => (
-            <label key={scenario.id} className="flex items-center bg-white p-3 rounded-lg shadow cursor-pointer hover:bg-gray-50">
+            <label
+              key={scenario.id}
+              className="flex items-center bg-white p-3 rounded-lg shadow cursor-pointer hover:bg-gray-50 transition-colors"
+            >
               <input
                 type="radio"
                 name="scenario"
                 value={scenario.id}
                 checked={selectedScenarioId === scenario.id}
                 onChange={(e) => setSelectedScenarioId(e.target.value)}
-                className="mr-3"
+                className="peer sr-only" // Hide the default radio button
               />
+              {/* --- SIMPLIFIED Custom Styled Circle --- */}
+              <span 
+                className="w-5 h-5 border-2 border-gray-400 bg-white rounded-full mr-3 block 
+                           peer-checked:bg-pink-500 peer-checked:border-pink-500" // Changes background and border
+              >
+                {/* No inner span needed now */}
+              </span>
+              {/* --- End Simplified Circle --- */}
+
+              {/* Text Label */}
               <span>{scenario.label}</span>
             </label>
           ))}
@@ -84,14 +97,14 @@ function FakeCallPage() {
         <h3 className="text-lg font-medium mb-2">Call Timer:</h3>
         <div className="flex gap-2">
           {[0, 10, 30, 60].map(seconds => (
-            <label key={seconds} className={`flex-1 text-center p-2 rounded-lg shadow cursor-pointer transition-colors ${selectedTimer === seconds ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-50'}`}>
+            <label key={seconds} className={`flex-1 text-center p-2 rounded-lg shadow cursor-pointer transition-colors ${selectedTimer === seconds ? 'bg-pink-500 text-white' : 'bg-white hover:bg-gray-50'}`}>
               <input
                 type="radio"
                 name="timer"
                 value={seconds}
                 checked={selectedTimer === seconds}
                 onChange={(e) => setSelectedTimer(parseInt(e.target.value))}
-                className="sr-only" // Hide the actual radio button
+                className="sr-only"
               />
               <span>{seconds === 0 ? 'Now' : `${seconds}s`}</span>
             </label>
@@ -122,3 +135,4 @@ function FakeCallPage() {
 }
 
 export default FakeCallPage;
+

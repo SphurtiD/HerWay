@@ -31,7 +31,7 @@ export default function FAQs() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-pink-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-pink-50 px-4">
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">
         <h2 className="text-3xl font-bold mb-8 text-center text-pink-600 neueL">
           Frequently Asked Questions

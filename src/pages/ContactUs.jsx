@@ -23,7 +23,7 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-pink-100">
+    <div className="min-h-screen flex items-center justify-center bg-pink-50">
       <div className="w-full max-w-lg p-8 bg-white rounded-2xl shadow-lg">
         <h2 className="text-3xl font-bold mb-6 text-center neueL">Contact Us</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

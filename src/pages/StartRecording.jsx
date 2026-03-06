@@ -1,25 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
-// --- SOS Confirmation Modal Component ---
+// --- SOS Modal ---
 function SosConfirmationModal({ onConfirm, onCancel }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg p-6 shadow-xl max-w-sm w-full text-center">
         <h3 className="text-xl font-bold text-red-600 mb-4">Confirm SOS Call</h3>
         <p className="text-gray-700 mb-6">
-          This will attempt to call the standard emergency number (e.g., 112). Are you sure?
+          This will attempt to call the emergency number (112). Are you sure?
         </p>
         <div className="flex justify-around">
-          <button
-            onClick={onCancel}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded transition-colors"
-          >
+          <button onClick={onCancel} className="bg-gray-300 px-6 py-2 rounded">
             Cancel
           </button>
-          <button
-            onClick={onConfirm}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded transition-colors"
-          >
+          <button onClick={onConfirm} className="bg-red-600 text-white px-6 py-2 rounded">
             Call Now
           </button>
         </div>
@@ -28,350 +22,229 @@ function SosConfirmationModal({ onConfirm, onCancel }) {
   );
 }
 
-
-// --- Recording Page Component ---
-
 function RecordingPage() {
-  // State: 'idle', 'recording', 'paused'
-  const [recordingStatus, setRecordingStatus] = useState('idle');
+  const [recordingStatus, setRecordingStatus] = useState("idle");
   const [showSaveOption, setShowSaveOption] = useState(false);
-  
-  // --- NEW State for Recording Logic ---
-  const [permissionStatus, setPermissionStatus] = useState('prompt'); // 'prompt', 'granted', 'denied'
-  const mediaRecorderRef = useRef(null); // To hold the MediaRecorder instance
-  const audioChunksRef = useRef([]); // To store recorded audio data
-  const audioStreamRef = useRef(null); // To hold the audio stream for stopping later
-
-  // --- NEW State for SOS ---
   const [showSosConfirm, setShowSosConfirm] = useState(false);
-  const sosHoldTimeoutRef = useRef(null); // Use ref for timeout ID
 
-  // --- Handlers ---
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const audioStreamRef = useRef(null);
 
-  const requestMicrophonePermission = async () => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert('Microphone access is not supported by your browser.');
-      setPermissionStatus('denied');
-      return null;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setPermissionStatus('granted');
-      audioStreamRef.current = stream; // Store the stream
-      return stream;
-    } catch (err) {
-      console.error('Error accessing microphone:', err);
-      setPermissionStatus('denied');
-      alert('Microphone permission denied. Please enable it in your browser settings.');
-      return null;
-    }
-  };
+  const canvasRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationRef = useRef(null);
+
+  const sosHoldTimeoutRef = useRef(null);
+
+  // ---------------- RECORDING ----------------
 
   const startRecording = async () => {
-    let stream = audioStreamRef.current;
-    if (permissionStatus !== 'granted') {
-      stream = await requestMicrophonePermission();
-      if (!stream) return; // Permission denied or failed
-    }
-    
-    // Ensure stream is active
-     if (!stream || !stream.active) {
-        stream = await requestMicrophonePermission();
-        if (!stream) return;
-     }
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioStreamRef.current = stream;
 
+    const recorder = new MediaRecorder(stream);
+    mediaRecorderRef.current = recorder;
+    audioChunksRef.current = [];
 
-    setRecordingStatus('recording');
-    setShowSaveOption(false);
-    audioChunksRef.current = []; // Clear previous chunks
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        audioChunksRef.current.push(event.data);
+      }
+    };
 
-    try {
-      // --- Use MediaRecorder API ---
-      const recorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = recorder;
+    recorder.onstop = () => {
+      stopVisualizer();
+      stream.getTracks().forEach((t) => t.stop());
+      setRecordingStatus("idle");
+      setShowSaveOption(true);
+    };
 
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      recorder.onstop = () => {
-        // Now handled by explicit handleStop logic
-         console.log('Recorder stopped via onstop event.');
-          // Ensure tracks are stopped only when fully done, not on pause
-          if (recordingStatus === 'idle' && audioStreamRef.current) {
-               audioStreamRef.current.getTracks().forEach(track => track.stop());
-               audioStreamRef.current = null; // Clear the stream ref
-               console.log("Audio stream tracks stopped.");
-          }
-      };
-      
-       recorder.onerror = (event) => {
-         console.error("MediaRecorder error:", event.error);
-         alert("An error occurred during recording.");
-         handleStop(true); // Force stop on error
-       };
-
-
-      recorder.start();
-      console.log('Recording Started');
-      // --- End MediaRecorder ---
-
-    } catch (error) {
-       console.error("Failed to start MediaRecorder:", error);
-       alert("Failed to start recording. Ensure microphone is connected and permissions are granted.");
-       setRecordingStatus('idle'); // Reset state on failure
-    }
+    recorder.start();
+    setRecordingStatus("recording"); // IMPORTANT: Only set state here
   };
 
-  const handleStart = async () => {
-    if (permissionStatus === 'denied') {
-      alert('Microphone permission denied. Please enable it in your browser settings.');
-      return;
-    }
-    await startRecording();
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
   };
-
-
-  const handlePause = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-      mediaRecorderRef.current.pause();
-      setRecordingStatus('paused');
-      console.log('Recording Paused');
-    }
-  };
-
-  const handleResume = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
-      mediaRecorderRef.current.resume();
-      setRecordingStatus('recording');
-      console.log('Recording Resumed');
-    }
-  };
-
- const handleStop = (isError = false) => {
-    if (mediaRecorderRef.current && (mediaRecorderRef.current.state === 'recording' || mediaRecorderRef.current.state === 'paused')) {
-      // Use a local variable to manage state update timing
-      const recorder = mediaRecorderRef.current;
-      
-       // Add event listener for the 'stop' event *before* calling stop()
-       // This ensures we capture the final chunks correctly
-        recorder.addEventListener('stop', () => {
-          console.log('MediaRecorder explicitly stopped.');
-          // Stop the tracks *after* the recorder has fully stopped and processed data
-          if (audioStreamRef.current) {
-            audioStreamRef.current.getTracks().forEach(track => track.stop());
-            audioStreamRef.current = null;
-             console.log("Audio stream tracks stopped after recorder stop.");
-          }
-          mediaRecorderRef.current = null; // Clear recorder ref
-          setRecordingStatus('idle'); // Update status *after* stop processing
-          if (!isError) { // Only show save if not stopped due to error
-             setShowSaveOption(true);
-          }
-        }, { once: true }); // Use { once: true } to auto-remove the listener
-
-      recorder.stop(); // Trigger the 'stop' event
-      console.log('Recording Stop requested...');
-
-    } else {
-       // If no recorder or already stopped, just reset UI
-       setRecordingStatus('idle');
-       setShowSaveOption(!isError && audioChunksRef.current.length > 0);
-        if (audioStreamRef.current) {
-           audioStreamRef.current.getTracks().forEach(track => track.stop());
-           audioStreamRef.current = null;
-        }
-    }
- };
-
 
   const handleSave = () => {
-    if (audioChunksRef.current.length === 0) {
-      alert('No audio recorded to save.');
-      setShowSaveOption(false);
-      return;
-    }
-
-    // --- Create Blob and Download Link ---
-    const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' }); // Common format
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const link = document.createElement('a');
-    link.href = audioUrl;
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    link.download = `safety-recording-${timestamp}.webm`; // Filename
-    document.body.appendChild(link); // Required for Firefox
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(audioUrl); // Clean up
-    console.log('Saving Recording Locally');
-    // --- End Save Logic ---
-
-    audioChunksRef.current = []; // Clear chunks after saving
+    const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `safety-recording-${Date.now()}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
     setShowSaveOption(false);
   };
-  
-   const handleDiscard = () => {
-      audioChunksRef.current = []; // Clear chunks
-      setShowSaveOption(false);
-      console.log("Recording discarded.");
-   };
 
-  // --- SOS Logic ---
+  const handleDiscard = () => {
+    setShowSaveOption(false);
+  };
+
+  // ---------------- VISUALIZER ----------------
+
+  useEffect(() => {
+    if (recordingStatus !== "recording") return;
+    if (!canvasRef.current) return;
+
+    const startVisualizer = async () => {
+      const stream = audioStreamRef.current;
+
+      const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+      const audioContext = new AudioContextClass();
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+
+      analyser.fftSize = 128;
+      source.connect(analyser);
+
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      const draw = () => {
+        animationRef.current = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const barWidth = (canvas.width / bufferLength) * 1.5;
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+          const barHeight = (dataArray[i] / 255) * canvas.height;
+          ctx.fillStyle = "#2563eb";
+          ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+          x += barWidth + 2;
+        }
+      };
+
+      draw();
+    };
+
+    startVisualizer();
+
+    return () => stopVisualizer();
+  }, [recordingStatus]);
+
+  const stopVisualizer = () => {
+    cancelAnimationFrame(animationRef.current);
+    audioContextRef.current?.close();
+  };
+
+  // ---------------- SOS ----------------
+
   const sosButtonDown = () => {
-     sosHoldTimeoutRef.current = setTimeout(() => {
-        // Show confirmation modal instead of calling directly
-        setShowSosConfirm(true);
-     }, 1500); // 1.5 second hold
+    sosHoldTimeoutRef.current = setTimeout(() => {
+      setShowSosConfirm(true);
+    }, 1500);
   };
-  const sosButtonUp = () => {
-     clearTimeout(sosHoldTimeoutRef.current);
-  };
+
+  const sosButtonUp = () => clearTimeout(sosHoldTimeoutRef.current);
 
   const confirmSosCall = () => {
-    console.log('SOS Confirmed! Initiating call...');
-    // --- Initiate Call ---
-    // Use tel: protocol - Browser will likely ask for user confirmation again
-    window.location.href = 'tel:112'; // Or appropriate emergency number
-    // --- ---
+    window.location.href = "tel:112";
     setShowSosConfirm(false);
   };
 
-  const cancelSosCall = () => {
-    setShowSosConfirm(false);
-  };
-
-  // Cleanup stream on component unmount if still active
-  useEffect(() => {
-     return () => {
-        clearTimeout(sosHoldTimeoutRef.current);
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-            mediaRecorderRef.current.stop();
-        }
-        if (audioStreamRef.current) {
-           audioStreamRef.current.getTracks().forEach(track => track.stop());
-           console.log("Audio stream stopped on component unmount.");
-        }
-     }
-  }, []);
-
+  // ---------------- UI ----------------
 
   return (
-    <div className="flex flex-col items-center justify-between min-h-screen bg-gray-100 p-6 pt-12 pb-20">
-      
-       {/* --- NEW: SOS Confirmation Modal --- */}
-       {showSosConfirm && (
-         <SosConfirmationModal onConfirm={confirmSosCall} onCancel={cancelSosCall} />
-       )}
+    <div className="flex flex-col items-center justify-between min-h-screen bg-pink-50 p-6 pt-12 pb-20">
 
-      {/* Status Area */}
+      {showSosConfirm && (
+        <SosConfirmationModal
+          onConfirm={confirmSosCall}
+          onCancel={() => setShowSosConfirm(false)}
+        />
+      )}
+
       <div className="text-center">
         <h2 className="text-2xl font-semibold mb-2">Safety Recording</h2>
-        {permissionStatus === 'denied' && (
-             <p className="text-red-600 font-medium">Microphone permission denied.</p>
-        )}
-        {permissionStatus === 'prompt' && recordingStatus === 'idle' && !showSaveOption && (
-             <p className="text-gray-600">Press Start to request microphone access.</p>
-        )}
-        {permissionStatus === 'granted' && recordingStatus === 'idle' && !showSaveOption && (
-          <p className="text-gray-600">Ready to record. Press the button below.</p>
-        )}
-        {recordingStatus === 'recording' && (
-          <p className="text-green-600 font-medium animate-pulse">Recording Active...</p>
-        )}
-        {recordingStatus === 'paused' && (
-          <p className="text-yellow-600 font-medium">Recording Paused</p>
-        )}
-        {showSaveOption && (
-           <p className="text-blue-600 font-medium">Recording stopped. Save locally?</p>
-        )}
       </div>
 
-      {/* Main Content Area (Button or Waves) */}
       <div className="flex flex-col items-center justify-center flex-grow w-full max-w-xs">
-        {/* Show Start button only when idle and not showing save */}
-        {recordingStatus === 'idle' && !showSaveOption && (
+
+        {/* RECORD BUTTON */}
+        {recordingStatus === "idle" && !showSaveOption && (
           <button
-            onClick={handleStart}
-            disabled={permissionStatus === 'denied'} // Disable if permission denied
-            className={`text-white rounded-full w-40 h-40 flex flex-col items-center justify-center text-xl font-bold shadow-lg transition-colors ${
-              permissionStatus === 'denied' 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-red-500 hover:bg-red-600'
-            }`}
-            aria-label="Start recording"
+            onClick={startRecording}
+            className="bg-red-500 hover:bg-red-600 text-white rounded-full w-40 h-40 flex items-center justify-center shadow-lg"
           >
-             {/* Mic Icon */}
-             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-               <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-             </svg>
-            Start
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16"
+              viewBox="0 0 24 24"
+              fill="white"
+            >
+              <path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3z" />
+              <path d="M19 11a7 7 0 01-14 0H3a9 9 0 0018 0h-2z" />
+            </svg>
           </button>
         )}
 
-        {/* Show Waves placeholder when recording or paused */}
-        {(recordingStatus === 'recording' || recordingStatus === 'paused') && (
-          <div className="text-center w-full">
-            {/* TODO: Add real Audio Waves Visualization here */}
-            <div className="bg-blue-200 h-20 w-full rounded-lg flex items-center justify-center mb-4 animate-pulse">
-              <span className="text-blue-700">Audio Waves Placeholder</span>
-            </div>
-            <p className="text-sm text-gray-500 mb-6">
-              Your audio is being recorded. Feel free to pause or stop anytime.
-            </p>
+        {/* WAVES */}
+        {recordingStatus === "recording" && (
+          <div className="w-full text-center">
+            <canvas
+              ref={canvasRef}
+              className="w-full h-20 rounded-lg bg-blue-100 mb-4"
+            />
+            <button
+              onClick={stopRecording}
+              className="bg-black text-white px-6 py-2 rounded-lg"
+            >
+              Stop
+            </button>
           </div>
         )}
-         
-         {/* Show Save/Discard options */}
-         {showSaveOption && (
-           <div className="text-center">
-             <p className="text-gray-600 mb-4">Would you like to save the recording?</p>
-              <button
-                onClick={handleSave}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors"
-              >
-                Save Locally
-              </button>
-               <button
-                onClick={handleDiscard} // Use discard handler
-                className="ml-4 text-gray-500 hover:text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors"
-              >
-                Discard
-              </button>
-           </div>
-         )}
+
+        {/* SAVE OPTIONS */}
+        {showSaveOption && (
+          <div className="text-center">
+            <button
+              onClick={handleSave}
+              className="bg-green-500 text-white px-6 py-3 rounded-lg"
+            >
+              Save Locally
+            </button>
+            <button
+              onClick={handleDiscard}
+              className="ml-4 text-gray-600 px-6 py-3"
+            >
+              Discard
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Control Buttons Area */}
+      {/* SOS */}
       <div className="w-full max-w-md flex justify-around items-center h-20">
-        {recordingStatus === 'recording' && (
-          <>
-            <button onClick={handlePause} /* ... Pause button ... */ > {/* Pause Icon */} <svg className="h-6 w-6" /*...*/ > <path d="M10 9v6m4-6v6"/> </svg> </button>
-            <button onClick={() => handleStop()} /* ... Stop button ... */ > {/* Stop Icon */} <svg className="h-6 w-6" /*...*/ > <path d="M6 6h12v12H6z"/> </svg> </button>
-             <button onMouseDown={sosButtonDown} onMouseUp={sosButtonUp} onTouchStart={sosButtonDown} onTouchEnd={sosButtonUp} /* ... SOS button ... */ > <span className="text-lg font-extrabold">SOS</span> </button>
-          </>
-        )}
-        {recordingStatus === 'paused' && (
-          <>
-            <button onClick={handleResume} /* ... Resume button ... */ > {/* Play Icon */} <svg className="h-6 w-6" /*...*/ > <path d="M8 5v14l11-7z"/> </svg> </button>
-             <button onClick={() => handleStop()} /* ... Stop button ... */ > {/* Stop Icon */} <svg className="h-6 w-6" /*...*/ > <path d="M6 6h12v12H6z"/> </svg> </button>
-            <button onMouseDown={sosButtonDown} onMouseUp={sosButtonUp} onTouchStart={sosButtonDown} onTouchEnd={sosButtonUp} /* ... SOS button ... */ > <span className="text-lg font-extrabold">SOS</span> </button>
-          </>
-        )}
-         {recordingStatus === 'idle' && !showSaveOption && (
-            <button onMouseDown={sosButtonDown} onMouseUp={sosButtonUp} onTouchStart={sosButtonDown} onTouchEnd={sosButtonUp} /* ... Idle SOS button ... */ > Hold for SOS </button>
-         )}
-          {/* Keep consistent styling - omitted for brevity */}
+        <button
+          onMouseDown={sosButtonDown}
+          onMouseUp={sosButtonUp}
+          onTouchStart={sosButtonDown}
+          onTouchEnd={sosButtonUp}
+          className="bg-red-700 text-white px-4 py-2 rounded-lg"
+        >
+          Hold for SOS
+        </button>
       </div>
     </div>
   );
 }
 
-// Default export
 export default RecordingPage;
-
-// --- Helper Functions and Full Button Styling (Add back if needed) ---
-// Remember to include the full styling for buttons as in the previous example if you copy-paste parts
-// For example: className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold p-4 rounded-full shadow transition-colors" etc.
-

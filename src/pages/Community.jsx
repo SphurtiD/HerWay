@@ -1,5 +1,4 @@
 import React from 'react'
-import MagicBento from '../components/MagicBento'
 import StarBorder from '../components/StarBorder'
 
 const Community = () => {
@@ -26,32 +25,12 @@ const Community = () => {
           <h1 className="text-5xl text-pink-600 algha font-bold">
             Check out our Community!
           </h1>
-          <StarBorder
-            as="button"
-            className="custom-class"
-            color="cyan"
-            speed="5s"
-          >
-            <h2 className="flex items-center gap-2">Connect on WhatsApp <img src="/images/whatsapp.png" alt="wsp" width={25} height={25}/></h2>
-          </StarBorder>
+          <p className='text-pink-200 text-lg text-bold'>Empower women. Share experiences. Be "Her" guide.</p>
         </div>
       </div>
 
       {/* MagicBento Section */}
-      <div className="h-dvh w-screen flex items-center justify-center bg-pink-100">
-        <MagicBento
-          textAutoHide={true}
-          enableStars={true}
-          enableSpotlight={true}
-          enableBorderGlow={true}
-          enableTilt={true}
-          enableMagnetism={true}
-          clickEffect={true}
-          spotlightRadius={300}
-          particleCount={12}
-          glowColor="244, 114, 182" // 🎨 pink-400 for nice glow
-          className="h-full w-full bg-pink-200 rounded-2xl shadow-lg"
-        />
+      <div className="h-dvh w-screen flex items-center justify-center bg-pink-50">
       </div>
     </>
   )
