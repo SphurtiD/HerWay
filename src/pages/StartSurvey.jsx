@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 export default function StartSurvey() {
+
   const [formData, setFormData] = useState({
     ageGroup: "",
     role: "",
@@ -11,7 +12,23 @@ export default function StartSurvey() {
     safetyApps: "",
     unsafeReason: "",
     otherLanguage: "",
+    phone: "",
+    phoneCode: "+91"
   });
+
+  const [contacts, setContacts] = useState([
+    { name: "", relationship: "", code: "+91", phone: "" }
+  ]);
+
+  const countryCodes = [
+    { code: "+91", label: "India" },
+    { code: "+1", label: "USA/Canada" },
+    { code: "+44", label: "UK" },
+    { code: "+61", label: "Australia" },
+    { code: "+971", label: "UAE" },
+    { code: "+81", label: "Japan" },
+    { code: "+49", label: "Germany" },
+  ];
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -28,30 +45,58 @@ export default function StartSurvey() {
     }
   };
 
+  const handleContactChange = (index, field, value) => {
+    const updated = [...contacts];
+    updated[index][field] = value;
+    setContacts(updated);
+  };
+
+  const addContact = () => {
+    if (contacts.length < 4) {
+      setContacts([
+        ...contacts,
+        { name: "", relationship: "", code: "+91", phone: "" }
+      ]);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Survey Data:", formData);
 
-    // 👉 Your teammate can use Axios here
-    // axios.post("/api/survey", formData)
-    //   .then(res => console.log(res))
-    //   .catch(err => console.error(err));
+    if (!contacts[0].name || !contacts[0].phone) {
+      alert("At least one emergency contact is required.");
+      return;
+    }
+
+    const surveyData = {
+      ...formData,
+      emergencyContacts: contacts
+    };
+
+    console.log("Survey Data:", surveyData);
+
+    // axios.post("/api/survey", surveyData)
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-pink-100 px-4 py-25">
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">
+
         <h2 className="text-3xl font-bold mb-8 text-center text-pink-600 neueL">
-          Start Survey
+          Tell Us About You
         </h2>
+
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* 1. Age Group */}
+          {/* Age */}
           <div>
-            <label className="block font-medium mb-2">What is your age group?</label>
+            <label className="block font-medium mb-2">
+              What is your age group? <span className="text-red-500">*</span>
+            </label>
             {["Under 18", "18–24", "25–34", "35–44", "45 and above"].map((option) => (
               <div key={option}>
                 <input
+                  required
                   type="radio"
                   name="ageGroup"
                   value={option}
@@ -64,14 +109,49 @@ export default function StartSurvey() {
             ))}
           </div>
 
-          {/* 2. Role */}
+          {/* Phone Number */}
           <div>
             <label className="block font-medium mb-2">
-              What best describes your current role?
+              Your Phone Number <span className="text-red-500">*</span>
+            </label>
+
+            <div className="flex gap-2">
+              
+              <select
+                name="phoneCode"
+                value={formData.phoneCode}
+                onChange={handleChange}
+                className="border rounded px-2 py-2"
+              >
+                {countryCodes.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code} ({c.label})
+                  </option>
+                ))}
+              </select>
+
+              <input
+                required
+                type="tel"
+                name="phone"
+                placeholder="Enter phone number"
+                value={formData.phone}
+                onChange={handleChange}
+                className="flex-1 border rounded px-3 py-2"
+              />
+
+            </div>
+          </div>
+
+          {/* Role */}
+          <div>
+            <label className="block font-medium mb-2">
+              What best describes your current role? <span className="text-red-500">*</span>
             </label>
             {["Student", "Working professional", "Homemaker", "Freelancer", "Other"].map((option) => (
               <div key={option}>
                 <input
+                  required
                   type="radio"
                   name="role"
                   value={option}
@@ -84,10 +164,10 @@ export default function StartSurvey() {
             ))}
           </div>
 
-          {/* 3. Travel frequency */}
+          {/* Travel Frequency */}
           <div>
             <label className="block font-medium mb-2">
-              How often do you travel in a month (for any reason)?
+              How often do you travel in a month? <span className="text-red-500">*</span>
             </label>
             {[
               "Rarely (0–1 times/month)",
@@ -97,6 +177,7 @@ export default function StartSurvey() {
             ].map((option) => (
               <div key={option}>
                 <input
+                  required
                   type="radio"
                   name="travelFrequency"
                   value={option}
@@ -109,12 +190,15 @@ export default function StartSurvey() {
             ))}
           </div>
 
-          {/* 4. Travel alone */}
+          {/* Travel Alone */}
           <div>
-            <label className="block font-medium mb-2">How often do you travel alone?</label>
+            <label className="block font-medium mb-2">
+              How often do you travel alone? <span className="text-red-500">*</span>
+            </label>
             {["Never", "Occasionally", "Often", "Almost always"].map((option) => (
               <div key={option}>
                 <input
+                  required
                   type="radio"
                   name="travelAlone"
                   value={option}
@@ -127,19 +211,20 @@ export default function StartSurvey() {
             ))}
           </div>
 
-          {/* 5. Solo travel experience */}
+          {/* Solo Experience */}
           <div>
             <label className="block font-medium mb-2">
-              Have you traveled solo to unfamiliar cities or locations before?
+              Have you traveled solo to unfamiliar cities before? <span className="text-red-500">*</span>
             </label>
             {[
               "Yes",
               "No",
               "Only during the day",
-              "Only with planned assistance (hotel pickups, family, etc.)",
+              "Only with planned assistance",
             ].map((option) => (
               <div key={option}>
                 <input
+                  required
                   type="radio"
                   name="soloExperience"
                   value={option}
@@ -152,11 +237,12 @@ export default function StartSurvey() {
             ))}
           </div>
 
-          {/* 6. Languages */}
+          {/* Languages */}
           <div>
             <label className="block font-medium mb-2">
-              Which language(s) do you feel most comfortable communicating in while traveling?
+              Which language(s) are you comfortable using while traveling? <span className="text-red-500">*</span>
             </label>
+
             {["English", "Hindi", "Marathi", "Tamil", "Telugu", "Bengali", "Kannada"].map((option) => (
               <div key={option}>
                 <input
@@ -170,7 +256,7 @@ export default function StartSurvey() {
                 {option}
               </div>
             ))}
-            {/* Other language input */}
+
             <div className="mt-2">
               <input
                 type="checkbox"
@@ -184,6 +270,7 @@ export default function StartSurvey() {
               {formData.languages.includes("Other") && (
                 <input
                   type="text"
+                  required
                   name="otherLanguage"
                   placeholder="Please specify"
                   value={formData.otherLanguage}
@@ -194,14 +281,15 @@ export default function StartSurvey() {
             </div>
           </div>
 
-          {/* 7. Safety apps */}
+          {/* Safety Apps */}
           <div>
             <label className="block font-medium mb-2">
-              Do you currently use any personal safety apps or tools?
+              Do you use any personal safety apps? <span className="text-red-500">*</span>
             </label>
             {["Yes (frequently)", "Yes (rarely)", "No"].map((option) => (
               <div key={option}>
                 <input
+                  required
                   type="radio"
                   name="safetyApps"
                   value={option}
@@ -214,7 +302,70 @@ export default function StartSurvey() {
             ))}
           </div>
 
-          {/* 8. Unsafe Reason (optional) */}
+          {/* Emergency Contacts */}
+          <div>
+            <label className="block font-medium mb-3">
+              Emergency Contacts <span className="text-red-500">*</span>
+            </label>
+
+            {contacts.map((contact, index) => (
+              <div key={index} className="border p-4 rounded-lg mb-4 bg-pink-50">
+
+                <input
+                  required
+                  type="text"
+                  placeholder="Contact Name *"
+                  value={contact.name}
+                  onChange={(e) => handleContactChange(index, "name", e.target.value)}
+                  className="w-full border rounded px-3 py-2 mb-2"
+                />
+
+                <input
+                  type="text"
+                  placeholder="Relationship (optional)"
+                  value={contact.relationship}
+                  onChange={(e) => handleContactChange(index, "relationship", e.target.value)}
+                  className="w-full border rounded px-3 py-2 mb-2"
+                />
+
+                <div className="flex gap-2">
+                  <select
+                    value={contact.code}
+                    onChange={(e) => handleContactChange(index, "code", e.target.value)}
+                    className="border rounded px-2"
+                  >
+                    {countryCodes.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.code} ({c.label})
+                      </option>
+                    ))}
+                  </select>
+
+                  <input
+                    required
+                    type="tel"
+                    placeholder="Phone Number *"
+                    value={contact.phone}
+                    onChange={(e) => handleContactChange(index, "phone", e.target.value)}
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                </div>
+
+              </div>
+            ))}
+
+            {contacts.length < 4 && (
+              <button
+                type="button"
+                onClick={addContact}
+                className="border-dashed border-2 border-pink-400 w-full py-2 rounded-lg text-pink-600 hover:bg-pink-100"
+              >
+                + Add another emergency contact
+              </button>
+            )}
+          </div>
+
+          {/* Unsafe Reason */}
           <div>
             <label className="block font-medium mb-2">
               If you’ve ever felt unsafe while traveling, what made you feel that way? (Optional)
@@ -225,17 +376,16 @@ export default function StartSurvey() {
               onChange={handleChange}
               className="w-full border rounded px-3 py-2"
               rows="3"
-              placeholder="Type your answer here..."
             />
           </div>
 
-          {/* Submit button */}
           <button
             type="submit"
             className="w-full bg-pink-600 text-white py-2 px-4 rounded-lg hover:bg-pink-700 transition"
           >
             Submit
           </button>
+
         </form>
       </div>
     </div>

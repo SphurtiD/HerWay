@@ -11,6 +11,10 @@ import StartRecording from "./pages/StartRecording";
 import FakeCallPage from "./pages/FakeCalls";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import StartSurvey from "./pages/StartSurvey";
+import EndSurvey from "./pages/EndSurvey";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const App = () => {
   return (
@@ -38,6 +42,10 @@ const App = () => {
             <Route path="/map" element={<MapPage />} />
             <Route path="/startrecording" element={<StartRecording />} />
             <Route path="/fakecalls" element={<FakeCallPage />} />
+            <Route path="/startsurvey" element={<StartSurvey />} />
+            <Route path="/endsurvey" element={<EndSurvey />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </main>
 
