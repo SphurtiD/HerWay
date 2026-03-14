@@ -11,13 +11,13 @@ const Navbar = () => {
 
   const navItems = [
     { label: "Home", path: "/" },
-    { label: "About", path: "/about" },
-    { label: "Community", path: "/community" },
-    { label: "FAQs", path: "/faqs" },
-    { label: "Contact Us", path: "/contactus" },
-    { label: "Map", path: "/map" },
     { label: "Start Recording", path: "/startrecording" },
     { label: "Fake Calls", path: "/fakecalls" },
+    { label: "Community", path: "/community" },
+    { label: "Map", path: "/map" },
+    { label: "About", path: "/about" },
+    { label: "FAQs", path: "/faqs" },
+    { label: "Contact Us", path: "/contactus" },
   ];
 
   return (
